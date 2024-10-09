@@ -3,7 +3,7 @@ import csv
 
 class Student:
     def __init__(self, name, subjects_file: str):
-        self.__setattr__('name', name)
+        self.name = name
         self.subjects = {}
         self.load_subjects(subjects_file)
 
@@ -11,10 +11,12 @@ class Student:
         if name == 'name':
             if not isinstance(value, str) and not value[0].isupper():
                 raise ValueError('ФИО должно состоять из букв и начинаться с заглавной')
-            super().__setattr__('name', name)
+        super().__setattr__(name, value)
 
     def __getattr__(self, name):
-        return name
+        if name in self.subjects:
+            return self.subjects[name]
+        raise AttributeError(f"Предмет {name} не найден")
 
     def __str__(self):
         return f'Студент: {self.name}\nПредмет: {", ".join(i for i in self.subjects.keys())}'
